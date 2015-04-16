@@ -97,6 +97,7 @@ var ViewHistory = (function ViewHistoryClosure() {
     },
 
     set: function ViewHistory_set(name, val) {
+      console.debug('storage.set', this.fingerprint, name, value);
       if (!this.isInitializedPromiseResolved) {
         return;
       }
@@ -105,6 +106,7 @@ var ViewHistory = (function ViewHistoryClosure() {
     },
 
     setMultiple: function ViewHistory_setMultiple(properties) {
+      console.debug('storage.setMultiple', this.fingerprint, properties);
       if (!this.isInitializedPromiseResolved) {
         return;
       }
@@ -115,6 +117,7 @@ var ViewHistory = (function ViewHistoryClosure() {
     },
 
     get: function ViewHistory_get(name, defaultValue) {
+      console.debug('storage.get', this.fingerprint, name, defaultValue);
       if (!this.isInitializedPromiseResolved) {
         return defaultValue;
       }

@@ -27,7 +27,8 @@
 
 'use strict';
 
-var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
+// var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
+var DEFAULT_URL = '';
 var DEFAULT_SCALE_DELTA = 1.1;
 var MIN_SCALE = 0.25;
 var MAX_SCALE = 10.0;
@@ -40,6 +41,20 @@ var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 //PDFJS.useOnlyCssZoom = true;
 //PDFJS.disableTextLayer = true;
 //#endif
+
+
+// Dropbox
+var dropbox = new Dropbox.Client({ key: 'o6vz3q4hf0l7pbz' });
+
+dropbox.authenticate(function(err) {
+  if (err) {
+    console.error('Unable to authenticate with dropbox:', err);
+    return;
+  }
+
+  console.debug('Authenticated!', dropbox);
+});
+
 
 PDFJS.imageResourcesPath = './images/';
 //#if (FIREFOX || MOZCENTRAL || B2G || GENERIC || CHROME)
