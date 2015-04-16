@@ -91,6 +91,9 @@ dropbox.authenticate(function(err) {
   database = new Database(dropbox);
   database.init().then(function() {
     console.debug('Database initialized');
+
+    var overlay = document.getElementById('initializing-overlay');
+    overlay.className = 'hide';
   });
 });
 
