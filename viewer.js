@@ -81,7 +81,7 @@ var dropbox = new Dropbox.Client({ key: 'd7wx2fpuckppz15' });
 var database;
 
 dropbox.authenticate(function(err) {
-  if (err) {
+  if (err || !dropbox.isAuthenticated()) {
     console.error('Unable to authenticate with dropbox:', err);
     return;
   }
