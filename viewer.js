@@ -44,7 +44,7 @@ var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 
 
 // Dropbox
-var dropbox = new Dropbox.Client({ key: 'o6vz3q4hf0l7pbz' });
+var dropbox = new Dropbox.Client({ key: 'd7wx2fpuckppz15' });
 
 dropbox.authenticate(function(err) {
   if (err) {
