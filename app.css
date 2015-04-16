@@ -11,7 +11,7 @@
 }
 
 #initializing-overlay.hide {
-  /*display: none;*/
+  display: none;
 }
 
 #initializing-overlay span {
