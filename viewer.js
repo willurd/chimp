@@ -80,7 +80,7 @@ Database.prototype.table = function(name) {
 var dropbox = new Dropbox.Client({ key: 'd7wx2fpuckppz15' });
 var database;
 
-dropbox.authenticate({interactive: false}, function(err) {
+dropbox.authenticate(function(err) {
   if (err) {
     console.error('Unable to authenticate with dropbox:', err);
     return;
