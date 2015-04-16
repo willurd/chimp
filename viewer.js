@@ -42,19 +42,61 @@ var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 //PDFJS.disableTextLayer = true;
 //#endif
 
+// ======================================================================
+// Database
+// ======================================================================
 
+function Database(dropbox) {
+  this.dropbox = dropbox;
+  this.datastore;
+}
+
+Database.prototype.init = function() {
+  if (!this.initPromise) {
+    this.initPromise = new Promise(function(resolve, reject) {
+      dropbox.getDatastoreManager().openDefaultDatastore(function(err, dropboxDatastore) {
+        if (err) {
+          console.error('Unable to open default datastore:', err);
+          return reject(err);
+        }
+
+        this.datastore = dropboxDatastore;
+        resolve(this);
+      }.bind(this));
+    }.bind(this));
+  }
+
+  return this.initPromise;
+};
+
+Database.prototype.table = function(name) {
+  return this.datastore.getTable(name);
+};
+
+// ======================================================================
 // Dropbox
-var dropbox = new Dropbox.Client({ key: 'd7wx2fpuckppz15' });
+// ======================================================================
 
-dropbox.authenticate(function(err) {
+var dropbox = new Dropbox.Client({ key: 'd7wx2fpuckppz15' });
+var database;
+
+dropbox.authenticate({interactive: false}, function(err) {
   if (err) {
     console.error('Unable to authenticate with dropbox:', err);
     return;
   }
 
-  console.debug('Authenticated!', dropbox);
+  console.debug('Authenticated with Dropbox');
+
+  database = new Database(dropbox);
+  database.init().then(function() {
+    console.debug('Database initialized');
+  });
 });
 
+// ======================================================================
+// PDFJS config
+// ======================================================================
 
 PDFJS.imageResourcesPath = './images/';
 //#if (FIREFOX || MOZCENTRAL || B2G || GENERIC || CHROME)
@@ -907,35 +949,30 @@ var PDFViewerApplication = {
         PDFHistory.initialize(self.documentFingerprint, self);
       }
 
-      store.initializedPromise.then(function resolved() {
-        var storedHash = null;
-        if (self.preferenceShowPreviousViewOnLoad &&
-            store.get('exists', false)) {
-          var pageNum = store.get('page', '1');
-          var zoom = self.preferenceDefaultZoomValue ||
-                     store.get('zoom', self.pdfViewer.currentScale);
-          var left = store.get('scrollLeft', '0');
-          var top = store.get('scrollTop', '0');
+      var storedHash = null;
+      if (self.preferenceShowPreviousViewOnLoad &&
+          store.get('exists', false)) {
+        var pageNum = store.get('page', '1');
+        var zoom = self.preferenceDefaultZoomValue ||
+                   store.get('zoom', self.pdfViewer.currentScale);
+        var left = store.get('scrollLeft', '0');
+        var top = store.get('scrollTop', '0');
 
-          storedHash = 'page=' + pageNum + '&zoom=' + zoom + ',' +
-                       left + ',' + top;
-        } else if (self.preferenceDefaultZoomValue) {
-          storedHash = 'page=1&zoom=' + self.preferenceDefaultZoomValue;
-        }
-        self.setInitialView(storedHash, scale);
+        storedHash = 'page=' + pageNum + '&zoom=' + zoom + ',' +
+                     left + ',' + top;
+      } else if (self.preferenceDefaultZoomValue) {
+        storedHash = 'page=1&zoom=' + self.preferenceDefaultZoomValue;
+      }
+      self.setInitialView(storedHash, scale);
 
-        // Make all navigation keys work on document load,
-        // unless the viewer is embedded in a web page.
-        if (!self.isViewerEmbedded) {
-          self.pdfViewer.focus();
+      // Make all navigation keys work on document load,
+      // unless the viewer is embedded in a web page.
+      if (!self.isViewerEmbedded) {
+        self.pdfViewer.focus();
 //#if (FIREFOX || MOZCENTRAL)
 //        self.pdfViewer.blur();
 //#endif
-        }
-      }, function rejected(reason) {
-        console.error(reason);
-        self.setInitialView(null, scale);
-      });
+      }
     });
 
     pagesPromise.then(function() {
@@ -1795,17 +1832,17 @@ window.addEventListener('updateviewarea', function () {
 
   var location = PDFViewerApplication.pdfViewer.location;
 
-  PDFViewerApplication.store.initializedPromise.then(function() {
-    PDFViewerApplication.store.setMultiple({
-      'exists': true,
-      'page': location.pageNumber,
-      'zoom': location.scale,
-      'scrollLeft': location.left,
-      'scrollTop': location.top
-    }).catch(function() {
-      // unable to write to storage
-    });
+  PDFViewerApplication.store.setMultiple({
+    'exists': true,
+    'page': location.pageNumber,
+    'zoom': location.scale,
+    'scrollLeft': location.left,
+    'scrollTop': location.top
+  }).catch(function() {
+    // unable to write to storage
+    console.error('Unable to write to storage');
   });
+
   var href = PDFViewerApplication.getAnchorUrl(location.pdfOpenParams);
   document.getElementById('viewBookmark').href = href;
   document.getElementById('secondaryViewBookmark').href = href;

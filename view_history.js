@@ -31,97 +31,52 @@
 var ViewHistory = (function ViewHistoryClosure() {
   function ViewHistory(fingerprint) {
     this.fingerprint = fingerprint;
-    this.isInitializedPromiseResolved = false;
-    this.initializedPromise =
-        this._readFromStorage().then(function (databaseStr) {
-      this.isInitializedPromiseResolved = true;
+    this.table = database.table('history');
+    this.item = this.table.query({fingerprint: fingerprint})[0];
+    this.cache = null;
 
-      var database = JSON.parse(databaseStr || '{}');
-      if (!('files' in database)) {
-        database.files = [];
-      }
-      if (database.files.length >= VIEW_HISTORY_MEMORY) {
-        database.files.shift();
-      }
-      var index;
-      for (var i = 0, length = database.files.length; i < length; i++) {
-        var branch = database.files[i];
-        if (branch.fingerprint === this.fingerprint) {
-          index = i;
-          break;
-        }
-      }
-      if (typeof index !== 'number') {
-        index = database.files.push({fingerprint: this.fingerprint}) - 1;
-      }
-      this.file = database.files[index];
-      this.database = database;
-    }.bind(this));
+    if (!this.item) {
+      this.item = this.table.insert({
+        fingerprint: fingerprint
+      });
+    }
+
+    this.debouncedWrite = _.debounce(this._write.bind(this), 500);
   }
 
   ViewHistory.prototype = {
-    _writeToStorage: function ViewHistory_writeToStorage() {
-      return new Promise(function (resolve) {
-        var databaseStr = JSON.stringify(this.database);
+    _write: function() {
+      if (!this.cache) {
+        return;
+      }
 
-//#if B2G
-//      asyncStorage.setItem('database', databaseStr, resolve);
-//#endif
-
-//#if FIREFOX || MOZCENTRAL
-//      sessionStorage.setItem('pdfjsHistory', databaseStr);
-//      resolve();
-//#endif
-
-//#if !(FIREFOX || MOZCENTRAL || B2G)
-        localStorage.setItem('database', databaseStr);
-        resolve();
-//#endif
-      }.bind(this));
-    },
-
-    _readFromStorage: function ViewHistory_readFromStorage() {
-      return new Promise(function (resolve) {
-//#if B2G
-//      asyncStorage.getItem('database', resolve);
-//#endif
-
-//#if FIREFOX || MOZCENTRAL
-//      resolve(sessionStorage.getItem('pdfjsHistory'));
-//#endif
-
-//#if !(FIREFOX || MOZCENTRAL || B2G)
-        resolve(localStorage.getItem('database'));
-//#endif
-      });
+      this.item.update(this.cache);
+      this.cache = null;
     },
 
     set: function ViewHistory_set(name, val) {
-      console.debug('storage.set', this.fingerprint, name, value);
-      if (!this.isInitializedPromiseResolved) {
-        return;
-      }
-      this.file[name] = val;
-      return this._writeToStorage();
+      this.cache = this.cache || {};
+      this.cache[name] = val;
+
+      this.debouncedWrite();
+
+      return Promise.resolve();
     },
 
     setMultiple: function ViewHistory_setMultiple(properties) {
-      console.debug('storage.setMultiple', this.fingerprint, properties);
-      if (!this.isInitializedPromiseResolved) {
-        return;
-      }
+      this.cache = this.cache || {};
+
       for (var name in properties) {
-        this.file[name] = properties[name];
+        this.cache[name] = properties[name];
       }
-      return this._writeToStorage();
+
+      this.debouncedWrite();
+
+      return Promise.resolve();
     },
 
     get: function ViewHistory_get(name, defaultValue) {
-      console.debug('storage.get', this.fingerprint, name, defaultValue);
-      if (!this.isInitializedPromiseResolved) {
-        return defaultValue;
-      }
-      return this.file[name] || defaultValue;
+      return this.item.get(name) || defaultValue;
     }
   };
 
