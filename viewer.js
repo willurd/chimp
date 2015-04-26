@@ -80,22 +80,19 @@ Database.prototype.table = function(name) {
 var dropbox = new Dropbox.Client({ key: 'd7wx2fpuckppz15' });
 var database;
 
-dropbox.authenticate(function(err) {
-  if (err || !dropbox.isAuthenticated()) {
-    console.error('Unable to authenticate with dropbox:', err);
-    return;
-  }
+window.onload = function() {
+  dropbox.authenticate(function(err) {
+    if (err || !dropbox.isAuthenticated()) {
+      console.error('Unable to authenticate with dropbox:', err);
+      return;
+    }
 
-  console.debug('Authenticated with Dropbox');
-
-  database = new Database(dropbox);
-  database.init().then(function() {
-    console.debug('Database initialized');
+    console.debug('Authenticated with Dropbox');
 
     var overlay = document.getElementById('initializing-overlay');
     overlay.className = 'hide';
   });
-});
+};
 
 // ======================================================================
 // PDFJS config
@@ -952,22 +949,6 @@ var PDFViewerApplication = {
         PDFHistory.initialize(self.documentFingerprint, self);
       }
 
-      var storedHash = null;
-      if (self.preferenceShowPreviousViewOnLoad &&
-          store.get('exists', false)) {
-        var pageNum = store.get('page', '1');
-        var zoom = self.preferenceDefaultZoomValue ||
-                   store.get('zoom', self.pdfViewer.currentScale);
-        var left = store.get('scrollLeft', '0');
-        var top = store.get('scrollTop', '0');
-
-        storedHash = 'page=' + pageNum + '&zoom=' + zoom + ',' +
-                     left + ',' + top;
-      } else if (self.preferenceDefaultZoomValue) {
-        storedHash = 'page=1&zoom=' + self.preferenceDefaultZoomValue;
-      }
-      self.setInitialView(storedHash, scale);
-
       // Make all navigation keys work on document load,
       // unless the viewer is embedded in a web page.
       if (!self.isViewerEmbedded) {
@@ -976,6 +957,29 @@ var PDFViewerApplication = {
 //        self.pdfViewer.blur();
 //#endif
       }
+
+      self.setInitialView('page=4&zoom=page-width,-21,9', scale);
+
+      if (self.preferenceShowPreviousViewOnLoad) {
+        var defaults = {
+          page: '1',
+          zoom: self.pdfViewer.currentScale,
+          scrollLeft: '0',
+          scrollTop: '0'
+        };
+
+        return store.get(defaults).then(function(c) {
+          if (c.exists) {
+            var zoom = self.preferenceDefaultZoomValue || c.zoom;
+            self.setHash('page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop);
+          } else {
+            self.setDefaultHash(scale);
+          }
+        });
+      } else if (self.preferenceDefaultZoomValue) {
+        self.setDefaultHash(scale);
+      }
+
     });
 
     pagesPromise.then(function() {
@@ -1109,6 +1113,10 @@ var PDFViewerApplication = {
 //    }));
 //#endif
     });
+  },
+
+  setDefaultHash: function pdfViewSetDefaultHash(scale) {
+    self.setInitialView('page=1&zoom=' + self.preferenceDefaultZoomValue, scale);
   },
 
   setInitialView: function pdfViewSetInitialView(storedHash, scale) {

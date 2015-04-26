@@ -18,6 +18,22 @@
 
 'use strict';
 
+function extend(target /*, ...sources */) {
+  var sources = Array.prototype.slice.call(arguments, 1);
+
+  for (var i = 0; i < sources.length; i++) {
+    var source = sources[i];
+
+    if (source) {
+      for (var key in source) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+}
+
 /**
  * View History - This is a utility for saving various view parameters for
  *                recently opened files.
@@ -31,16 +47,8 @@
 var ViewHistory = (function ViewHistoryClosure() {
   function ViewHistory(fingerprint) {
     this.fingerprint = fingerprint;
-    this.table = database.table('history');
-    this.item = this.table.query({fingerprint: fingerprint})[0];
+    this.path = '/Apps/pdf-viewer/' + fingerprint + '.json';
     this.cache = null;
-
-    if (!this.item) {
-      this.item = this.table.insert({
-        fingerprint: fingerprint
-      });
-    }
-
     this.debouncedWrite = _.debounce(this._write.bind(this), 500);
   }
 
@@ -50,7 +58,15 @@ var ViewHistory = (function ViewHistoryClosure() {
         return;
       }
 
-      this.item.update(this.cache);
+      // dropbox.writeFile(this.path, JSON.stringify(this.cache), function(error, data) {
+      //   if (error) {
+      //     console.error('Error writing file:', error);
+      //     return;
+      //   }
+
+      //   console.debug('Wrote file:', this.path, this.cache);
+      // }.bind(this));
+
       this.cache = null;
     },
 
@@ -58,25 +74,36 @@ var ViewHistory = (function ViewHistoryClosure() {
       this.cache = this.cache || {};
       this.cache[name] = val;
 
-      this.debouncedWrite();
-
       return Promise.resolve();
     },
 
     setMultiple: function ViewHistory_setMultiple(properties) {
       this.cache = this.cache || {};
-
-      for (var name in properties) {
-        this.cache[name] = properties[name];
-      }
-
+      extend(this.cache, properties);
+      // for (var name in properties) {
+      //   this.cache[name] = properties[name];
+      // }
       this.debouncedWrite();
 
       return Promise.resolve();
     },
 
-    get: function ViewHistory_get(name, defaultValue) {
-      return this.item.get(name) || defaultValue;
+    get: function ViewHistory_get(defaults) {
+      return new Promise(function(resolve, reject) {
+        dropbox.readFile(this.path, function(error, data) {
+          if (error) {
+            if (error.response.responseText === 'File not found') {
+              resolve(defaults);
+            } else {
+              console.error('Error reading file:', error);
+              reject(error);
+            }
+          } else {
+            console.debug('Read file:', this.path, JSON.parse(data));
+            resolve(extend({}, defaults, JSON.parse(data)));
+          }
+        }.bind(this));
+      }.bind(this));
     }
   };
 
