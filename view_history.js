@@ -58,14 +58,14 @@ var ViewHistory = (function ViewHistoryClosure() {
         return;
       }
 
-      // dropbox.writeFile(this.path, JSON.stringify(this.cache), function(error, data) {
-      //   if (error) {
-      //     console.error('Error writing file:', error);
-      //     return;
-      //   }
+      dropbox.writeFile(this.path, JSON.stringify(this.cache), function(error, data) {
+        if (error) {
+          console.error('Error writing file:', error);
+          return;
+        }
 
-      //   console.debug('Wrote file:', this.path, this.cache);
-      // }.bind(this));
+        console.debug('Wrote file:', this.path, this.cache);
+      }.bind(this));
 
       this.cache = null;
     },
