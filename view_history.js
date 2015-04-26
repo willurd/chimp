@@ -61,10 +61,7 @@ var ViewHistory = (function ViewHistoryClosure() {
       dropbox.writeFile(this.path, JSON.stringify(this.cache), function(error, data) {
         if (error) {
           console.error('Error writing file:', error);
-          return;
         }
-
-        console.debug('Wrote file:', this.path, this.cache);
       }.bind(this));
 
       this.cache = null;
@@ -99,7 +96,6 @@ var ViewHistory = (function ViewHistoryClosure() {
               reject(error);
             }
           } else {
-            console.debug('Read file:', this.path, JSON.parse(data));
             resolve(extend({}, defaults, JSON.parse(data)));
           }
         }.bind(this));
