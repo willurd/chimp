@@ -892,6 +892,11 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
   content: url(images/toolbarButton-print.png);
 }
 
+.toolbarButton.dropboxChoose::before,
+.secondaryToolbarButton.dropboxChoose::before {
+  content: url(images/dropbox-light-gray.png);
+}
+
 .toolbarButton.openFile::before,
 .secondaryToolbarButton.openFile::before {
   content: url(images/toolbarButton-openFile.png);

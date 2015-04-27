@@ -40,6 +40,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 <!--#endif-->
 
     <script src="https://www.dropbox.com/static/api/dropbox-datastores-1.2-latest.js"></script>
+    <script src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="zyokorvk1qnibdd"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 
 <!--#if !(MOZCENTRAL || CHROME || MINIFIED)-->
@@ -156,6 +157,10 @@ http://sourceforge.net/adobe/cmap/wiki/License/
               <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
             </button>
 
+            <button id="secondaryDropboxChoose" class="secondaryToolbarButton dropboxChoose hiddenLargeView" title="Open from DropBox" tabindex="52">
+              <span>Open from DropBox</span>
+            </button>
+
             <button id="secondaryOpenFile" class="secondaryToolbarButton openFile visibleLargeView" title="Open File" tabindex="52" data-l10n-id="open_file">
               <span data-l10n-id="open_file_label">Open</span>
             </button>
@@ -231,6 +236,10 @@ http://sourceforge.net/adobe/cmap/wiki/License/
               <div id="toolbarViewerRight">
                 <button id="presentationMode" class="toolbarButton presentationMode hiddenLargeView" title="Switch to Presentation Mode" tabindex="31" data-l10n-id="presentation_mode">
                   <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
+                </button>
+
+                <button id="dropboxChoose" class="toolbarButton dropboxChoose hiddenLargeView" title="Open from DropBox" tabindex="32">
+                  <span>Open from DropBox</span>
                 </button>
 
                 <button id="openFile" class="toolbarButton openFile hiddenLargeView" title="Open File" tabindex="32" data-l10n-id="open_file">

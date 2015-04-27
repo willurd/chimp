@@ -201,6 +201,7 @@ var PDFViewerApplication = {
       toggleButton: document.getElementById('secondaryToolbarToggle'),
       presentationModeButton:
         document.getElementById('secondaryPresentationMode'),
+      dropboxChoose: document.getElementById('secondaryDropboxChoose'),
       openFile: document.getElementById('secondaryOpenFile'),
       print: document.getElementById('secondaryPrint'),
       download: document.getElementById('secondaryDownload'),
@@ -1688,6 +1689,9 @@ function webViewerInitialized() {
 
   document.getElementById('presentationMode').addEventListener('click',
     SecondaryToolbar.presentationModeClick.bind(SecondaryToolbar));
+
+  document.getElementById('dropboxChoose').addEventListener('click',
+    SecondaryToolbar.dropboxChooseClick.bind(SecondaryToolbar));
 
   document.getElementById('openFile').addEventListener('click',
     SecondaryToolbar.openFileClick.bind(SecondaryToolbar));

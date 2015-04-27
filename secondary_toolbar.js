@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* globals PDFViewerApplication, SCROLLBAR_PADDING */
+/* globals PDFViewerApplication, Dropbox, SCROLLBAR_PADDING */
 
 'use strict';
 
@@ -50,6 +50,7 @@ var SecondaryToolbar = {
       // (except for toggleHandTool, hand_tool.js is responsible for it):
       { element: this.presentationModeButton,
         handler: this.presentationModeClick },
+      { element: this.dropboxChoose, handler: this.dropboxChooseClick },
       { element: this.openFile, handler: this.openFileClick },
       { element: this.print, handler: this.printClick },
       { element: this.download, handler: this.downloadClick },
@@ -73,6 +74,26 @@ var SecondaryToolbar = {
   // Event handling functions.
   presentationModeClick: function secondaryToolbarPresentationModeClick(evt) {
     this.presentationMode.request();
+    this.close();
+  },
+
+  dropboxChooseClick: function secondaryToolbarDropboxChooseClick(evt) {
+    console.debug('Dropbox chooser clicked');
+
+    Dropbox.choose({
+      linkType: 'direct',
+      multiselect: false,
+      extensions: ['.pdf'],
+
+      success: function(files) {
+        console.debug(files, files[0] && files[0].link);
+      },
+
+      cancel: function() {
+        // Do nothing.
+      }
+    });
+
     this.close();
   },
 
