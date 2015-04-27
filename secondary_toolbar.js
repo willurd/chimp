@@ -32,6 +32,7 @@ var SecondaryToolbar = {
     // Define the toolbar buttons.
     this.toggleButton = options.toggleButton;
     this.presentationModeButton = options.presentationModeButton;
+    this.dropboxChoose = options.dropboxChoose;
     this.openFile = options.openFile;
     this.print = options.print;
     this.download = options.download;
