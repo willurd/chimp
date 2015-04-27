@@ -18,7 +18,7 @@
            DownloadManager, getFileName, scrollIntoView, getPDFFileNameFromURL,
            PDFHistory, Preferences, SidebarView, ViewHistory, Stats,
            PDFThumbnailViewer, URL, noContextMenuHandler, SecondaryToolbar,
-           PasswordPrompt, PresentationMode, HandTool, Promise,
+           PasswordPrompt, MessageOverlay, Dropbox, PresentationMode, HandTool, Promise,
            DocumentProperties, PDFOutlineView, PDFAttachmentView,
            OverlayManager, PDFFindController, PDFFindBar, getVisibleElements,
            watchScroll, PDFViewer, PDFRenderingQueue, PresentationModeState,
@@ -47,18 +47,15 @@ var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 // ======================================================================
 
 var dropbox = new Dropbox.Client({ key: 'd7wx2fpuckppz15' });
-var database;
 
 window.onload = function() {
-  dropbox.authenticate(function(err) {
-    var overlay = document.getElementById('initializing-overlay');
+  MessageOverlay.open('Loading', true);
 
+  dropbox.authenticate(function(err) {
     if (err || !dropbox.isAuthenticated()) {
-      console.error('Unable to authenticate:', err);
-      overlay.innerHTML = '<span>Unable to authenticate</span>';
+      MessageOverlay.open('Unable to authenticate: ' + err);
     } else {
-      console.debug('Authenticated');
-      overlay.className = 'hide';
+      MessageOverlay.close();
     }
   });
 };
@@ -248,6 +245,12 @@ var PDFViewerApplication = {
       producerField: document.getElementById('producerField'),
       versionField: document.getElementById('versionField'),
       pageCountField: document.getElementById('pageCountField')
+    });
+
+    MessageOverlay.initialize({
+      overlayName: 'messageOverlay',
+      message: document.getElementById('messageOverlayMessage'),
+      spinner: document.getElementById('messageOverlaySpinner')
     });
 
     var self = this;
