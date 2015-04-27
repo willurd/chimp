@@ -43,37 +43,6 @@ var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 //#endif
 
 // ======================================================================
-// Database
-// ======================================================================
-
-function Database(dropbox) {
-  this.dropbox = dropbox;
-  this.datastore;
-}
-
-Database.prototype.init = function() {
-  if (!this.initPromise) {
-    this.initPromise = new Promise(function(resolve, reject) {
-      dropbox.getDatastoreManager().openDefaultDatastore(function(err, dropboxDatastore) {
-        if (err) {
-          console.error('Unable to open default datastore:', err);
-          return reject(err);
-        }
-
-        this.datastore = dropboxDatastore;
-        resolve(this);
-      }.bind(this));
-    }.bind(this));
-  }
-
-  return this.initPromise;
-};
-
-Database.prototype.table = function(name) {
-  return this.datastore.getTable(name);
-};
-
-// ======================================================================
 // Dropbox
 // ======================================================================
 
@@ -82,15 +51,15 @@ var database;
 
 window.onload = function() {
   dropbox.authenticate(function(err) {
-    if (err || !dropbox.isAuthenticated()) {
-      console.error('Unable to authenticate with dropbox:', err);
-      return;
-    }
-
-    console.debug('Authenticated with Dropbox');
-
     var overlay = document.getElementById('initializing-overlay');
-    overlay.className = 'hide';
+
+    if (err || !dropbox.isAuthenticated()) {
+      console.error('Unable to authenticate:', err);
+      overlay.innerHTML = '<span>Unable to authenticate</span>';
+    } else {
+      console.debug('Authenticated');
+      overlay.className = 'hide';
+    }
   });
 };
 
@@ -958,9 +927,10 @@ var PDFViewerApplication = {
 //#endif
       }
 
-      self.setInitialView('page=4&zoom=page-width,-21,9', scale);
-
       if (self.preferenceShowPreviousViewOnLoad) {
+        self.setDefaultHash(scale);
+        console.debug('Showing previous view');
+
         var defaults = {
           page: '1',
           zoom: self.pdfViewer.currentScale,
@@ -970,16 +940,20 @@ var PDFViewerApplication = {
 
         return store.get(defaults).then(function(c) {
           if (c.exists) {
+            console.debug('Store has config for this pdf:', c);
             var zoom = self.preferenceDefaultZoomValue || c.zoom;
-            self.setHash('page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop);
+            var hash = 'page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop;
+            console.debug('hash:', hash);
+            self.setHash(hash);
           } else {
+            console.debug('Store has no config for this pdf');
             self.setDefaultHash(scale);
           }
         });
       } else if (self.preferenceDefaultZoomValue) {
+        console.debug('Showing with default zoom');
         self.setDefaultHash(scale);
       }
-
     });
 
     pagesPromise.then(function() {
@@ -1116,7 +1090,7 @@ var PDFViewerApplication = {
   },
 
   setDefaultHash: function pdfViewSetDefaultHash(scale) {
-    self.setInitialView('page=1&zoom=' + self.preferenceDefaultZoomValue, scale);
+    this.setInitialView('page=1&zoom=' + self.preferenceDefaultZoomValue, scale);
   },
 
   setInitialView: function pdfViewSetInitialView(storedHash, scale) {
