@@ -504,6 +504,8 @@ var PDFViewerApplication = {
   // TODO(mack): This function signature should really be pdfViewOpen(url, args)
   open: function pdfViewOpen(file, scale, password,
                              pdfDataRangeTransport, args) {
+    MessageOverlay.open('Opening', true);
+
     if (this.pdfDocument) {
       // Reload the preferences if a document was previously opened.
       Preferences.reload();
@@ -547,6 +549,8 @@ var PDFViewerApplication = {
         self.loading = false;
       },
       function getDocumentError(exception) {
+        MessageOverlay.close();
+
         var message = exception && exception.message;
         var loadingErrorMessage = mozL10n.get('loading_error', null,
           'An error occurred while loading the PDF.');
@@ -867,6 +871,8 @@ var PDFViewerApplication = {
   },
 
   load: function pdfViewLoad(pdfDocument, scale) {
+    MessageOverlay.open('Rendering', true);
+
     var self = this;
     scale = scale || UNKNOWN_SCALE;
 
@@ -905,6 +911,8 @@ var PDFViewerApplication = {
     this.pdfThumbnailViewer.setDocument(pdfDocument);
 
     firstPagePromise.then(function(pdfPage) {
+      MessageOverlay.close();
+
       downloadedPromise.then(function () {
         var event = document.createEvent('CustomEvent');
         event.initCustomEvent('documentload', true, true, {});
