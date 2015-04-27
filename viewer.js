@@ -933,7 +933,6 @@ var PDFViewerApplication = {
 
       if (self.preferenceShowPreviousViewOnLoad) {
         self.setDefaultHash(scale);
-        console.debug('Showing previous view');
 
         var defaults = {
           page: '1',
@@ -944,18 +943,14 @@ var PDFViewerApplication = {
 
         return store.get(defaults).then(function(c) {
           if (c.exists) {
-            console.debug('Store has config for this pdf:', c);
             var zoom = self.preferenceDefaultZoomValue || c.zoom;
             var hash = 'page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop;
-            console.debug('hash:', hash);
             self.setHash(hash);
           } else {
-            console.debug('Store has no config for this pdf');
             self.setDefaultHash(scale);
           }
         });
       } else if (self.preferenceDefaultZoomValue) {
-        console.debug('Showing with default zoom');
         self.setDefaultHash(scale);
       }
     });

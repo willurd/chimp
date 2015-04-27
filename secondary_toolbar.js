@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* globals PDFViewerApplication, Dropbox, SCROLLBAR_PADDING */
+/* globals PDFViewerApplication, URL, dropbox, Dropbox, MessageOverlay, SCROLLBAR_PADDING */
 
 'use strict';
 
@@ -79,19 +79,25 @@ var SecondaryToolbar = {
   },
 
   dropboxChooseClick: function secondaryToolbarDropboxChooseClick(evt) {
-    console.debug('Dropbox chooser clicked');
-
     Dropbox.choose({
       linkType: 'direct',
       multiselect: false,
       extensions: ['.pdf'],
 
       success: function(files) {
-        console.debug(files, files[0] && files[0].link);
-      },
+        MessageOverlay.open('Loading ' + files[0].name, true);
 
-      cancel: function() {
-        // Do nothing.
+        // https://dl.dropboxusercontent.com/1/view/3cfbr03ffar20ju/shared%20with%20me/Dwarf%20Fortress/Getting%20Started%20with%20Dwarf%20Fortress.pdf
+        var url = decodeURIComponent(files[0].link.replace(/^https?:\/\/dl\.dropboxusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+\//, ''));
+
+        dropbox.readFile(url, { arrayBuffer: true }, function(err, data) {
+          if (err) {
+            MessageOverlay.open('Unable to read file "' + url + '": ' + err);
+          } else {
+            MessageOverlay.close();
+            PDFViewerApplication.open(new Uint8Array(data), 0);
+          }
+        });
       }
     });
 
