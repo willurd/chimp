@@ -1525,8 +1525,8 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   display: none;
 }
 
+/*
 @media screen and (min-resolution: 2dppx) {
-  /* Rules for Retina screens */
   .toolbarButton::before {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
@@ -1680,6 +1680,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     content: url(images/secondaryToolbarButton-documentProperties@2x.png);
   }
 }
+*/
 
 @media print {
   /* General rules for printing. */
