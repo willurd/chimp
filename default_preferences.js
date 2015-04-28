@@ -24,7 +24,7 @@ var DEFAULT_PREFERENCES = {
   showPreviousViewOnLoad: true,
   defaultZoomValue: '',
   sidebarViewOnLoad: 0,
-  enableHandToolOnLoad: false,
+  enableHandToolOnLoad: true,
   enableWebGL: false,
   pdfBugEnabled: false,
   disableRange: false,
