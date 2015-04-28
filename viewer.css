@@ -897,6 +897,15 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
   content: url(images/dropbox-light-gray.png);
 }
 
+.toolbarButton.sync {
+  width: 36px;
+}
+
+.toolbarButton.sync::before,
+.secondaryToolbarButton.sync::before {
+  content: url(images/refresh.png);
+}
+
 .toolbarButton.openFile::before,
 .secondaryToolbarButton.openFile::before {
   content: url(images/toolbarButton-openFile.png);

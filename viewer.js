@@ -205,6 +205,7 @@ var PDFViewerApplication = {
       openFile: document.getElementById('secondaryOpenFile'),
       print: document.getElementById('secondaryPrint'),
       download: document.getElementById('secondaryDownload'),
+      sync: document.getElementById('secondarySync'),
       viewBookmark: document.getElementById('secondaryViewBookmark'),
       firstPage: document.getElementById('firstPage'),
       lastPage: document.getElementById('lastPage'),
@@ -594,6 +595,10 @@ var PDFViewerApplication = {
     var filename = getPDFFileNameFromURL(url);
     var downloadManager = new DownloadManager();
     downloadManager.onerror = function (err) {
+      if (err) {
+        console.debug('Download manager error:', err);
+      }
+
       // This error won't really be helpful because it's likely the
       // fallback won't work either (or is already open).
       PDFViewerApplication.error('PDF failed to download.');
@@ -870,6 +875,35 @@ var PDFViewerApplication = {
     }
   },
 
+  sync: function pdfViewSync() {
+    MessageOverlay.open('Syncing progress', true);
+
+    if (!this.store) {
+      // There is no pdf loaded.
+      return;
+    }
+
+    return this.store.get(this.defaultConfig()).then(function(c) {
+      MessageOverlay.close();
+
+      if (c.exists) {
+        console.debug('exists');
+        var zoom = c.zoom || this.preferenceDefaultZoomValue;
+        var hash = 'page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop;
+        this.setHash(hash);
+      }
+    }.bind(this));
+  },
+
+  defaultConfig: function pdfViewDefaultConfig() {
+    return {
+      page: '1',
+      zoom: this.pdfViewer.currentScale,
+      scrollLeft: '0',
+      scrollTop: '0'
+    };
+  },
+
   load: function pdfViewLoad(pdfDocument, scale) {
     MessageOverlay.open('Rendering', true);
 
@@ -912,6 +946,8 @@ var PDFViewerApplication = {
 
     firstPagePromise.then(function(pdfPage) {
       MessageOverlay.close();
+      document.getElementById('sync').disabled = false;
+      document.getElementById('secondarySync').disabled = false;
 
       downloadedPromise.then(function () {
         var event = document.createEvent('CustomEvent');
@@ -942,16 +978,9 @@ var PDFViewerApplication = {
       if (self.preferenceShowPreviousViewOnLoad) {
         self.setDefaultHash(scale);
 
-        var defaults = {
-          page: '1',
-          zoom: self.pdfViewer.currentScale,
-          scrollLeft: '0',
-          scrollTop: '0'
-        };
-
-        return store.get(defaults).then(function(c) {
+        return store.get(self.defaultConfig()).then(function(c) {
           if (c.exists) {
-            var zoom = self.preferenceDefaultZoomValue || c.zoom;
+            var zoom = c.zoom || this.preferenceDefaultZoomValue;
             var hash = 'page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop;
             self.setHash(hash);
           } else {
@@ -1097,7 +1126,7 @@ var PDFViewerApplication = {
   },
 
   setDefaultHash: function pdfViewSetDefaultHash(scale) {
-    this.setInitialView('page=1&zoom=' + self.preferenceDefaultZoomValue, scale);
+    this.setInitialView('page=1&zoom=' + this.preferenceDefaultZoomValue || 'auto', scale);
   },
 
   setInitialView: function pdfViewSetInitialView(storedHash, scale) {
@@ -1704,6 +1733,9 @@ function webViewerInitialized() {
 
   document.getElementById('download').addEventListener('click',
     SecondaryToolbar.downloadClick.bind(SecondaryToolbar));
+
+  document.getElementById('sync').addEventListener('click',
+    SecondaryToolbar.syncClick.bind(SecondaryToolbar));
 
 //#if (FIREFOX || MOZCENTRAL)
 //PDFViewerApplication.setTitleUsingUrl(file);
