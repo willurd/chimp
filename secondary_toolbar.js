@@ -98,6 +98,7 @@ var SecondaryToolbar = {
           } else {
             MessageOverlay.close();
             PDFViewerApplication.open(new Uint8Array(data), 0);
+            PDFViewerApplication.setTitle(files[0].name);
           }
         });
       }

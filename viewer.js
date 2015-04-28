@@ -477,7 +477,8 @@ var PDFViewerApplication = {
       // Embedded PDF viewers should not be changing their parent page's title.
       return;
     }
-    document.title = title;
+    var name = 'Chimp';
+    document.title = title ? (title + ' | ' + name) : name;
 //#if B2G
 //  document.getElementById('activityTitle').textContent = title;
 //#endif
