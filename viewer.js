@@ -887,7 +887,6 @@ var PDFViewerApplication = {
       MessageOverlay.close();
 
       if (c.exists) {
-        console.debug('exists');
         var zoom = c.zoom || this.preferenceDefaultZoomValue;
         var hash = 'page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop;
         this.setHash(hash);
