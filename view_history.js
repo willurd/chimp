@@ -31,7 +31,7 @@
 var ViewHistory = (function ViewHistoryClosure() {
   function ViewHistory(fingerprint) {
     this.fingerprint = fingerprint;
-    this.path = '/Apps/Chimp/' + fingerprint + '.json';
+    this.path = '/Apps/Chimp/configs/' + fingerprint + '.json';
     this.cache = null;
     this.debouncedWrite = _.debounce(this._write.bind(this), 500);
   }
