@@ -1,6 +1,7 @@
 /* globals Dropbox, MessageOverlay */
 
 var dropbox = new Dropbox.Client({ key: 'uvc3d21d69j51qv' });
+var dropboxAppPath = '/Apps/Chimp';
 
 window.onload = function() {
   MessageOverlay.open('Loading', true);

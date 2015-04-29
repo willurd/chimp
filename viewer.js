@@ -1167,7 +1167,7 @@ var PDFViewerApplication = {
   cleanup: function pdfViewCleanup() {
     this.pdfViewer.cleanup();
     this.pdfThumbnailViewer.cleanup();
-    this.pdfDocument.cleanup();
+    this.pdfDocument && this.pdfDocument.cleanup();
   },
 
   forceRendering: function pdfViewForceRendering() {

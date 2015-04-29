@@ -16,24 +16,25 @@ var DropboxHistoryView = {
 
   render: function dropboxHistoryViewRender() {
     var container = DropboxHistoryView.container;
-    var files = DropboxHistory.list();
 
-    DropboxHistoryView.reset();
+    DropboxHistory.list().then(function(files) {
+      DropboxHistoryView.reset();
 
-    files.forEach(function(file) {
-      var div = document.createElement('div');
-      div.className = 'outlineItem';
-      var element = document.createElement('a');
-      element.href = '#';
+      files.forEach(function(file) {
+        var div = document.createElement('div');
+        div.className = 'dropboxHistoryItem';
+        var element = document.createElement('a');
+        element.href = '#';
 
-      element.onclick = function openPdfFile(e) {
-        PDFViewerApplication.openDropboxFile(file);
-        return false;
-      };
+        element.onclick = function openPdfFile(e) {
+          PDFViewerApplication.openDropboxFile(file);
+          return false;
+        };
 
-      element.textContent = file.name;
-      div.appendChild(element);
-      container.appendChild(div);
+        element.textContent = file.name;
+        div.appendChild(element);
+        container.appendChild(div);
+      });
     });
   },
 

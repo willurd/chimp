@@ -1,4 +1,4 @@
-/* globals _ */
+/* globals _, Promise, dropbox, dropboxAppPath */
 
 /**
  * This manages a history of the recently-read PDFs from Dropbox.
@@ -15,22 +15,14 @@
  *   }
  */
 var DropboxHistory = {
-  storageKey: 'dropboxHistory',
-  maxItems: 10,
+  historyFile: dropboxAppPath + '/history.json',
+  maxItems: 15,
   listeners: null,
 
   initialize: function dropboxHistoryInitialize(options) {
-    if (!DropboxHistory.isSupported()) {
-      return;
-    }
-
     _.extend(DropboxHistory, options);
 
     DropboxHistory._listeners = [];
-  },
-
-  isSupported: function dropboxHistoryIsSupported() {
-    return typeof localStorage !== 'undefined';
   },
 
   listen: function dropboxHistoryListen(callback) {
@@ -46,35 +38,48 @@ var DropboxHistory = {
   },
 
   add: function dropboxHistoryAdd(item) {
-    if (!DropboxHistory.isSupported()) {
-      return;
-    }
+    return DropboxHistory.list().then(function(list) {
+      var currentIndex = _.findIndex(list, function(searchItem) {
+        return searchItem.path === item.path;
+      });
 
-    var list = DropboxHistory.list();
-    var currentIndex = _.findIndex(list, function(searchItem) {
-      return searchItem.path === item.path;
-    });
+      if (currentIndex >= 0) {
+        list.splice(currentIndex, 1);
+      }
 
-    if (currentIndex >= 0) {
-      list.splice(currentIndex, 1);
-    }
+      list.unshift(item);
+      list = list.slice(0, DropboxHistory.maxItems);
 
-    list.unshift(item);
-    list = list.slice(0, DropboxHistory.maxItems);
-    localStorage.setItem(DropboxHistory.storageKey, JSON.stringify(list));
-
-    DropboxHistory._listeners.forEach(function(listener) {
-      listener(list);
+      return new Promise(function(resolve, reject) {
+        dropbox.writeFile(DropboxHistory.historyFile, JSON.stringify(list), function(err, data) {
+          if (err) {
+            console.error('Error writing history file:', err);
+            reject(err);
+          } else {
+            DropboxHistory._listeners.forEach(function(listener) {
+              listener(list);
+            });
+            resolve();
+          }
+        });
+      });
     });
   },
 
   list: function dropboxHistoryList() {
-    if (!this.isSupported()) {
-      return [];
-    } else {
-      var list = localStorage.getItem(DropboxHistory.storageKey);
-      list = list && JSON.parse(list);
-      return list || [];
-    }
+    return new Promise(function(resolve, reject) {
+      dropbox.readFile(DropboxHistory.historyFile, function(err, data) {
+        if (err) {
+          if (err.response.error === 'File not found') {
+            resolve([]);
+          } else {
+            console.error('Error reading history file:', err);
+            reject(err);
+          }
+        } else {
+          resolve(JSON.parse(data));
+        }
+      });
+    });
   }
 };

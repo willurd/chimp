@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* globals PDFJS, VIEW_HISTORY_MEMORY, Promise, dropbox, _ */
+/* globals PDFJS, VIEW_HISTORY_MEMORY, Promise, dropbox, dropboxAppPath, _ */
 
 'use strict';
 
@@ -31,7 +31,7 @@
 var ViewHistory = (function ViewHistoryClosure() {
   function ViewHistory(fingerprint) {
     this.fingerprint = fingerprint;
-    this.path = '/Apps/Chimp/configs/' + fingerprint + '.json';
+    this.path = dropboxAppPath + '/configs/' + fingerprint + '.json';
     this.cache = null;
     this.debouncedWrite = _.debounce(this._write.bind(this), 500);
   }
@@ -71,13 +71,13 @@ var ViewHistory = (function ViewHistoryClosure() {
 
     get: function ViewHistory_get(defaults) {
       return new Promise(function(resolve, reject) {
-        dropbox.readFile(this.path, function(error, data) {
-          if (error) {
-            if (error.response.responseText === 'File not found') {
+        dropbox.readFile(this.path, function(err, data) {
+          if (err) {
+            if (err.response.error === 'File not found') {
               resolve(defaults);
             } else {
-              console.error('Error reading file:', error);
-              reject(error);
+              console.error('Error reading file:', err);
+              reject(err);
             }
           } else {
             resolve(_.extend({}, defaults, JSON.parse(data)));
