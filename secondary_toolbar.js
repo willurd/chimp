@@ -37,7 +37,7 @@ var SecondaryToolbar = {
     this.print = options.print;
     this.download = options.download;
     this.sync = options.sync;
-    this.viewBookmark = options.viewBookmark;
+    // this.viewBookmark = options.viewBookmark;
     this.firstPage = options.firstPage;
     this.lastPage = options.lastPage;
     this.pageRotateCw = options.pageRotateCw;
@@ -57,7 +57,7 @@ var SecondaryToolbar = {
       { element: this.print, handler: this.printClick },
       { element: this.download, handler: this.downloadClick },
       { element: this.sync, handler: this.syncClick },
-      { element: this.viewBookmark, handler: this.viewBookmarkClick },
+      // { element: this.viewBookmark, handler: this.viewBookmarkClick },
       { element: this.firstPage, handler: this.firstPageClick },
       { element: this.lastPage, handler: this.lastPageClick },
       { element: this.pageRotateCw, handler: this.pageRotateCwClick },
@@ -134,9 +134,9 @@ var SecondaryToolbar = {
     this.close();
   },
 
-  viewBookmarkClick: function secondaryToolbarViewBookmarkClick(evt) {
-    this.close();
-  },
+  // viewBookmarkClick: function secondaryToolbarViewBookmarkClick(evt) {
+  //   this.close();
+  // },
 
   firstPageClick: function secondaryToolbarFirstPageClick(evt) {
     PDFViewerApplication.page = 1;

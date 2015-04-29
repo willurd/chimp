@@ -1233,8 +1233,11 @@ html[dir='rtl'] .outlineItem > .outlineItems {
 }
 
 html[dir='ltr'] .outlineItem > a {
-  padding: 2px 0 5px 10px;
+  /*padding: 2px 0 5px 10px;*/
+  padding: 2px 4px;
+  white-space: nowrap;
 }
+
 html[dir='ltr'] .attachmentsItem > button {
   padding: 2px 0 3px 7px;
   text-align: left;

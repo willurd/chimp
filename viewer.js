@@ -185,7 +185,7 @@ var PDFViewerApplication = {
       print: document.getElementById('secondaryPrint'),
       download: document.getElementById('secondaryDownload'),
       sync: document.getElementById('secondarySync'),
-      viewBookmark: document.getElementById('secondaryViewBookmark'),
+      // viewBookmark: document.getElementById('secondaryViewBookmark'),
       firstPage: document.getElementById('firstPage'),
       lastPage: document.getElementById('lastPage'),
       pageRotateCw: document.getElementById('pageRotateCw'),
@@ -1850,8 +1850,8 @@ window.addEventListener('updateviewarea', function () {
   });
 
   var href = PDFViewerApplication.getAnchorUrl(location.pdfOpenParams);
-  document.getElementById('viewBookmark').href = href;
-  document.getElementById('secondaryViewBookmark').href = href;
+  // document.getElementById('viewBookmark').href = href;
+  // document.getElementById('secondaryViewBookmark').href = href;
 
   // Update the current bookmark in the browsing history.
   PDFHistory.updateCurrentBookmark(location.pdfOpenParams, location.pageNumber);
@@ -1914,9 +1914,8 @@ window.addEventListener('change', function webViewerChange(evt) {
   PDFViewerApplication.setTitleUsingUrl(file.name);
 
   // URL does not reflect proper document location - hiding some icons.
-  document.getElementById('viewBookmark').setAttribute('hidden', 'true');
-  document.getElementById('secondaryViewBookmark').
-    setAttribute('hidden', 'true');
+  // document.getElementById('viewBookmark').setAttribute('hidden', 'true');
+  // document.getElementById('secondaryViewBookmark').setAttribute('hidden', 'true');
   document.getElementById('download').setAttribute('hidden', 'true');
   document.getElementById('secondaryDownload').setAttribute('hidden', 'true');
 }, true);
