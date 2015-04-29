@@ -943,6 +943,18 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
   content: url(images/toolbarButton-viewThumbnail.png);
 }
 
+#viewDropboxHistory.toolbarButton {
+  width: 36px;
+}
+
+#viewDropboxHistory.toolbarButton::before {
+  content: url(images/history.png);
+}
+
+#viewDropbox.toolbarButton::before {
+  content: url(images/dropbox-light-gray.png);
+}
+
 html[dir="ltr"] #viewOutline.toolbarButton::before {
   content: url(images/toolbarButton-viewOutline.png);
 }
