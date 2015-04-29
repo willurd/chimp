@@ -22,7 +22,7 @@
            DocumentProperties, PDFOutlineView, PDFAttachmentView,
            OverlayManager, PDFFindController, PDFFindBar, getVisibleElements,
            watchScroll, PDFViewer, PDFRenderingQueue, PresentationModeState,
-           RenderingStates, DEFAULT_SCALE, UNKNOWN_SCALE,
+           RenderingStates, DEFAULT_SCALE, UNKNOWN_SCALE, DropboxHistory,
            IGNORE_CURRENT_POSITION_ON_ZOOM: true */
 
 'use strict';
@@ -41,28 +41,6 @@ var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 //PDFJS.useOnlyCssZoom = true;
 //PDFJS.disableTextLayer = true;
 //#endif
-
-// ======================================================================
-// Dropbox
-// ======================================================================
-
-var dropbox = new Dropbox.Client({ key: 'uvc3d21d69j51qv' });
-
-window.onload = function() {
-  MessageOverlay.open('Loading', true);
-
-  dropbox.authenticate(function(err) {
-    if (err || !dropbox.isAuthenticated()) {
-      MessageOverlay.open('Unable to authenticate: ' + err);
-    } else {
-      MessageOverlay.close();
-    }
-  });
-};
-
-// ======================================================================
-// PDFJS config
-// ======================================================================
 
 PDFJS.imageResourcesPath = './images/';
 //#if (FIREFOX || MOZCENTRAL || B2G || GENERIC || CHROME)
@@ -168,6 +146,7 @@ var PDFViewerApplication = {
     pdfRenderingQueue.setThumbnailViewer(this.pdfThumbnailViewer);
 
     Preferences.initialize();
+    DropboxHistory.initialize();
 
     this.findController = new PDFFindController({
       pdfViewer: this.pdfViewer,

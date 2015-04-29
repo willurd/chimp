@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* globals PDFViewerApplication, URL, dropbox, Dropbox, MessageOverlay, SCROLLBAR_PADDING */
+/* globals PDFViewerApplication, URL, dropbox, Dropbox, DropboxHistory, MessageOverlay, SCROLLBAR_PADDING */
 
 'use strict';
 
@@ -87,18 +87,25 @@ var SecondaryToolbar = {
       extensions: ['.pdf'],
 
       success: function(files) {
-        MessageOverlay.open('Loading ' + files[0].name, true);
+        var file = files[0];
 
-        // https://dl.dropboxusercontent.com/1/view/3cfbr03ffar20ju/shared%20with%20me/Dwarf%20Fortress/Getting%20Started%20with%20Dwarf%20Fortress.pdf
-        var url = decodeURIComponent(files[0].link.replace(/^https?:\/\/dl\.dropboxusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+\//, ''));
+        if (!file) {
+          console.error('Dropbox returned success with no file');
+          return;
+        }
 
-        dropbox.readFile(url, { arrayBuffer: true }, function(err, data) {
+        file.path = decodeURIComponent(file.link.replace(/^https?:\/\/dl\.dropboxusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+\//, ''));
+
+        DropboxHistory.add(file);
+        MessageOverlay.open('Loading ' + file.name, true);
+
+        dropbox.readFile(file.path, { arrayBuffer: true }, function(err, data) {
           if (err) {
-            MessageOverlay.open('Unable to read file "' + url + '": ' + err);
+            MessageOverlay.open('Unable to read file "' + file.path + '": ' + err);
           } else {
             MessageOverlay.close();
             PDFViewerApplication.open(new Uint8Array(data), 0);
-            PDFViewerApplication.setTitle(files[0].name);
+            PDFViewerApplication.setTitle(file.name);
           }
         });
       }

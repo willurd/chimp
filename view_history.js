@@ -18,22 +18,6 @@
 
 'use strict';
 
-function extend(target /*, ...sources */) {
-  var sources = Array.prototype.slice.call(arguments, 1);
-
-  for (var i = 0; i < sources.length; i++) {
-    var source = sources[i];
-
-    if (source) {
-      for (var key in source) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-}
-
 /**
  * View History - This is a utility for saving various view parameters for
  *                recently opened files.
@@ -76,7 +60,7 @@ var ViewHistory = (function ViewHistoryClosure() {
 
     setMultiple: function ViewHistory_setMultiple(properties) {
       this.cache = this.cache || {};
-      extend(this.cache, properties);
+      _.extend(this.cache, properties);
       // for (var name in properties) {
       //   this.cache[name] = properties[name];
       // }
@@ -96,7 +80,7 @@ var ViewHistory = (function ViewHistoryClosure() {
               reject(error);
             }
           } else {
-            resolve(extend({}, defaults, JSON.parse(data)));
+            resolve(_.extend({}, defaults, JSON.parse(data)));
           }
         }.bind(this));
       }.bind(this));
