@@ -21,8 +21,8 @@
            PasswordPrompt, MessageOverlay, Dropbox, PresentationMode, HandTool, Promise,
            DocumentProperties, PDFOutlineView, PDFAttachmentView,
            OverlayManager, PDFFindController, PDFFindBar, getVisibleElements,
-           watchScroll, PDFViewer, PDFRenderingQueue, PresentationModeState,
-           RenderingStates, DEFAULT_SCALE, UNKNOWN_SCALE, DropboxHistory,
+           watchScroll, PDFViewer, PDFRenderingQueue, PresentationModeState, dropbox,
+           RenderingStates, DEFAULT_SCALE, UNKNOWN_SCALE, DropboxHistory, DropboxHistoryView,
            IGNORE_CURRENT_POSITION_ON_ZOOM: true */
 
 'use strict';
@@ -127,6 +127,8 @@ var PDFViewerApplication = {
     pdfRenderingQueue.onIdle = this.cleanup.bind(this);
     this.pdfRenderingQueue = pdfRenderingQueue;
 
+    DropboxHistory.initialize();
+
     var container = document.getElementById('viewerContainer');
     var viewer = document.getElementById('viewer');
     this.pdfViewer = new PDFViewer({
@@ -137,6 +139,10 @@ var PDFViewerApplication = {
     });
     pdfRenderingQueue.setViewer(this.pdfViewer);
 
+    DropboxHistoryView.initialize({
+      container: document.getElementById('dropboxHistoryView')
+    });
+
     var thumbnailContainer = document.getElementById('thumbnailView');
     this.pdfThumbnailViewer = new PDFThumbnailViewer({
       container: thumbnailContainer,
@@ -146,7 +152,6 @@ var PDFViewerApplication = {
     pdfRenderingQueue.setThumbnailViewer(this.pdfThumbnailViewer);
 
     Preferences.initialize();
-    DropboxHistory.initialize();
 
     this.findController = new PDFFindController({
       pdfViewer: this.pdfViewer,
@@ -241,6 +246,12 @@ var PDFViewerApplication = {
       }),
       Preferences.get('sidebarViewOnLoad').then(function resolved(value) {
         self.preferenceSidebarViewOnLoad = value;
+
+        setTimeout(function() {
+          if (self.preferenceSidebarViewOnLoad === SidebarView.DROPBOX_HISTORY) {
+            self.switchSidebarView('dropboxHistory', true);
+          }
+        }, 0);
       }),
       Preferences.get('pdfBugEnabled').then(function resolved(value) {
         self.preferencePdfBugEnabled = value;
@@ -883,6 +894,21 @@ var PDFViewerApplication = {
     };
   },
 
+  openDropboxFile: function(file) {
+    DropboxHistory.add(file);
+    MessageOverlay.open('Loading ' + file.name, true);
+
+    dropbox.readFile(file.path, { arrayBuffer: true }, function(err, data) {
+      if (err) {
+        MessageOverlay.open('Unable to read file "' + file.path + '": ' + err);
+      } else {
+        MessageOverlay.close();
+        PDFViewerApplication.open(new Uint8Array(data), 0);
+        PDFViewerApplication.setTitle(file.name);
+      }
+    });
+  },
+
   load: function pdfViewLoad(pdfDocument, scale) {
     MessageOverlay.open('Rendering', true);
 
@@ -1251,10 +1277,12 @@ var PDFViewerApplication = {
     }
     var thumbsView = document.getElementById('thumbnailView');
     var outlineView = document.getElementById('outlineView');
+    var dropboxHistoryView = document.getElementById('dropboxHistoryView');
     var attachmentsView = document.getElementById('attachmentsView');
 
     var thumbsButton = document.getElementById('viewThumbnail');
     var outlineButton = document.getElementById('viewOutline');
+    var dropboxHistoryButton = document.getElementById('viewDropboxHistory');
     var attachmentsButton = document.getElementById('viewAttachments');
 
     switch (view) {
@@ -1263,9 +1291,11 @@ var PDFViewerApplication = {
 
         thumbsButton.classList.add('toggled');
         outlineButton.classList.remove('toggled');
+        dropboxHistoryButton.classList.remove('toggled');
         attachmentsButton.classList.remove('toggled');
         thumbsView.classList.remove('hidden');
         outlineView.classList.add('hidden');
+        dropboxHistoryView.classList.add('hidden');
         attachmentsView.classList.add('hidden');
 
         this.forceRendering();
@@ -1278,9 +1308,11 @@ var PDFViewerApplication = {
       case 'outline':
         thumbsButton.classList.remove('toggled');
         outlineButton.classList.add('toggled');
+        dropboxHistoryButton.classList.remove('toggled');
         attachmentsButton.classList.remove('toggled');
         thumbsView.classList.add('hidden');
         outlineView.classList.remove('hidden');
+        dropboxHistoryView.classList.add('hidden');
         attachmentsView.classList.add('hidden');
 
         if (outlineButton.getAttribute('disabled')) {
@@ -1288,12 +1320,27 @@ var PDFViewerApplication = {
         }
         break;
 
+      case 'dropboxHistory':
+        thumbsButton.classList.remove('toggled');
+        outlineButton.classList.remove('toggled');
+        dropboxHistoryButton.classList.add('toggled');
+        attachmentsButton.classList.remove('toggled');
+        thumbsView.classList.add('hidden');
+        outlineView.classList.add('hidden');
+        dropboxHistoryView.classList.remove('hidden');
+        attachmentsView.classList.add('hidden');
+
+        DropboxHistoryView.render();
+        break;
+
       case 'attachments':
         thumbsButton.classList.remove('toggled');
         outlineButton.classList.remove('toggled');
+        dropboxHistoryButton.classList.remove('toggled');
         attachmentsButton.classList.add('toggled');
         thumbsView.classList.add('hidden');
         outlineView.classList.add('hidden');
+        dropboxHistoryView.classList.add('hidden');
         attachmentsView.classList.remove('hidden');
 
         if (attachmentsButton.getAttribute('disabled')) {
@@ -1653,6 +1700,11 @@ function webViewerInitialized() {
   document.getElementById('viewOutline').addEventListener('click',
     function() {
       PDFViewerApplication.switchSidebarView('outline');
+    });
+
+  document.getElementById('viewDropboxHistory').addEventListener('click',
+    function() {
+      PDFViewerApplication.switchSidebarView('dropboxHistory');
     });
 
   document.getElementById('viewAttachments').addEventListener('click',

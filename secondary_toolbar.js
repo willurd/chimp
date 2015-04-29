@@ -96,18 +96,7 @@ var SecondaryToolbar = {
 
         file.path = decodeURIComponent(file.link.replace(/^https?:\/\/dl\.dropboxusercontent\.com\/[^\/]+\/[^\/]+\/[^\/]+\//, ''));
 
-        DropboxHistory.add(file);
-        MessageOverlay.open('Loading ' + file.name, true);
-
-        dropbox.readFile(file.path, { arrayBuffer: true }, function(err, data) {
-          if (err) {
-            MessageOverlay.open('Unable to read file "' + file.path + '": ' + err);
-          } else {
-            MessageOverlay.close();
-            PDFViewerApplication.open(new Uint8Array(data), 0);
-            PDFViewerApplication.setTitle(file.name);
-          }
-        });
+        PDFViewerApplication.openDropboxFile(file);
       }
     });
 
