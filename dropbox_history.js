@@ -26,7 +26,11 @@ var DropboxHistory = {
   },
 
   listen: function dropboxHistoryListen(callback) {
-    DropboxHistory._listeners.push(callback);
+    var index = DropboxHistory._listeners.indexOf(callback);
+
+    if (index === -1) {
+      DropboxHistory._listeners.push(callback);
+    }
   },
 
   unlisten: function dropboxHistoryListen(callback) {
