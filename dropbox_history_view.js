@@ -23,16 +23,21 @@ var DropboxHistoryView = {
       files.forEach(function(file) {
         var div = document.createElement('div');
         div.className = 'dropboxHistoryItem';
-        var element = document.createElement('a');
-        element.href = '#';
 
-        element.onclick = function openPdfFile(e) {
+        var link = document.createElement('a');
+        link.href = '#';
+        link.onclick = function openPdfFile(e) {
           PDFViewerApplication.openDropboxFile(file);
           return false;
         };
+        link.textContent = file.name;
 
-        element.textContent = file.name;
-        div.appendChild(element);
+        var path = document.createElement('span');
+        path.textContent = '/' + file.path.replace(new RegExp('\\/' + file.name + '$'), '');
+        link.appendChild(path);
+
+        div.appendChild(link);
+
         container.appendChild(div);
       });
     });
