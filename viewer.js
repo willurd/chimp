@@ -42,6 +42,8 @@ var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 //PDFJS.disableTextLayer = true;
 //#endif
 
+PDFJS.openExternalLinksInNewWindow = true;
+
 PDFJS.imageResourcesPath = './images/';
 //#if (FIREFOX || MOZCENTRAL || B2G || GENERIC || CHROME)
 //PDFJS.workerSrc = '../build/pdf.worker.js';
