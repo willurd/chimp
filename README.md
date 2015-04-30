@@ -17,14 +17,24 @@ Chimp's only purpose in life is to be a *great* PDF consumer.
 
 ## TODO
 
-* Fix ' | Chimp' duplication in the title (when more than one PDF is opened without refreshing the window)
+* Fix ' | Chimp' duplication in the title (when more than one PDF is opened without refreshing the window).
 * Make zoom +/- buttons change zoom value in increments of 5% or 10%.
-* Layout sidebar icons vertically on the left (or right, configurable) of the application (the icons are always visible - clicking the icon of the visible panel will close it)
-* Add a light theme (configurable, saved to Dropbox)
-* Location history with back/forward buttons (for example, follow a link to another part of the PDF, hit "back" to go back to where you were)
-* Digital book darts (add a marker anywhere on the left or right side of a page - useful for marking where in a page your are reading, especially for multi-column pages)
-  * Click+drag a marker to move it
-  * Click a marker's "x" (only visible on hover) to delete it
-  * Save markers to Dropbox along with the the PDF's saved location/config
-* Saved searches (usually, PDFs don't change so you should only have to perform a serach once - save searches and their results)
-* Note taking (not like sticky notes, just a list of notes in the sidebar that you can add to or edit)
+* Add a manager for pdf metadata that is saved to dropbox.
+  * Metadata should be stored in a map from `path -> Metadata` at `/Apps/Chimp/metadata.json`.
+* Add the ability to mark PDFs as "read" and "unread".
+* Add the ability to remove PDFs from history.
+* Make the history view indicate when a PDF is read.
+* Add a sidebar view that is a Dropbox tree.
+  * The tree should indicate when a PDF is read.
+  * Add search to the tree.
+  * Add a refresh button to refresh the currently-selected directory.
+  * Once this is done, get rid of the chooser drop-in.
+* Layout sidebar icons vertically on the left (or right, configurable) of the application (the icons are always visible - clicking the icon of the visible panel will close it).
+* Add a light theme (configurable, saved to Dropbox).
+* Location history with back/forward buttons (for example, follow a link to another part of the PDF, hit "back" to go back to where you were).
+* Digital book darts (add a marker anywhere on the left or right side of a page - useful for marking where in a page your are reading, especially for multi-column pages).
+  * Click+drag a marker to move it.
+  * Click a marker's "x" (only visible on hover) to delete it.
+  * Save markers to Dropbox along with the the PDF's saved location/config.
+* Saved searches (usually, PDFs don't change so you should only have to perform a serach once - save searches and their results).
+* Note taking (not like sticky notes, just a list of notes in the sidebar that you can add to or edit).
