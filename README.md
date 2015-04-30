@@ -6,7 +6,7 @@ Chimp is a PDF viewer written using Mozilla's amazing PDF.js library. It takes t
 * Open PDFs directly from your Dropbox account (no need to have Dropbox installed - you can even open from your mobile device)
 * A history of PDF files read from Dropbox (quickly access your most recently read PDFs)
 
-Chimp's only purpose in life is to be a *great* PDF consumer.
+My grand vision for Chimp is to make it a Dropbox-connected PDF Library.
 
 ## Attribution
 
