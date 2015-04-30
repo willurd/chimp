@@ -1,6 +1,12 @@
-# PDF Viewer
+# Chimp
 
+Chimp is a PDF viewer written using Mozilla's amazing PDF.js library. It takes their PDF viewer demo application and adds some bells and whistles like:
 
+* Location/page sync using Dropbox (read on one device, pick up where you left off on another)
+* Open PDFs directly from your Dropbox account (no need to have Dropbox installed - you can even open from your mobile device)
+* A history of PDF files read from Dropbox (quickly access your most recently read PDFs)
+
+Chimp's only purpose in life is to be a *great* PDF consumer.
 
 ## Attribution
 
@@ -11,5 +17,4 @@
 
 ## TODO
 
-* Change name
-* Fix presentation mode
+* Location history with back/forward buttons (for example, follow a link to another part of the PDF, hit "back" to go back to where you were)
