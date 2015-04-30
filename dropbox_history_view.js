@@ -1,8 +1,11 @@
 /* globals DropboxHistory, PDFViewerApplication */
 
 var DropboxHistoryView = {
+  maxItems: 50,
+
   initialize: function dropboxHistoryViewInitialize(options) {
     DropboxHistoryView.container = options.container;
+    DropboxHistoryView.maxItems = options.maxItems || DropboxHistoryView.maxItems;
     DropboxHistory.listen(DropboxHistoryView.onHistoryChange);
   },
 
@@ -20,7 +23,7 @@ var DropboxHistoryView = {
     DropboxHistory.list().then(function(files) {
       DropboxHistoryView.reset();
 
-      files.forEach(function(file) {
+      files.slice(0, DropboxHistoryView.maxItems).forEach(function(file) {
         var div = document.createElement('div');
         div.className = 'dropboxHistoryItem';
 

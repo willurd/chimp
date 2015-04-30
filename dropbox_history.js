@@ -16,7 +16,7 @@
  */
 var DropboxHistory = {
   historyFile: dropboxAppPath + '/history.json',
-  maxItems: 15,
+  maxItems: 100,
   listeners: null,
 
   initialize: function dropboxHistoryInitialize(options) {
