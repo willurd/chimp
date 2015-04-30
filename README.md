@@ -30,8 +30,13 @@ Chimp's only purpose in life is to be a *great* PDF consumer.
   * Add a refresh button to refresh the currently-selected directory.
   * Once this is done, get rid of the chooser drop-in.
 * Layout sidebar icons vertically on the left (or right, configurable) of the application (the icons are always visible - clicking the icon of the visible panel will close it).
-* Add a light theme (configurable, saved to Dropbox).
 * Location history with back/forward buttons (for example, follow a link to another part of the PDF, hit "back" to go back to where you were).
+* Add a settings page (saved to Dropbox).
+* Starred folders.
+* Starred PDFs.
+* Collections (named groups of PDFs).
+* Rethink the entire layout/design.
+* Add a light theme (configurable in settings).
 * Digital book darts (add a marker anywhere on the left or right side of a page - useful for marking where in a page your are reading, especially for multi-column pages).
   * Click+drag a marker to move it.
   * Click a marker's "x" (only visible on hover) to delete it.
