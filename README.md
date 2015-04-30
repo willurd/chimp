@@ -18,6 +18,7 @@ Chimp's only purpose in life is to be a *great* PDF consumer.
 ## TODO
 
 * Fix ' | Chimp' duplication in the title (when more than one PDF is opened without refreshing the window)
+* Make zoom +/- buttons change zoom value in increments of 5% or 10%.
 * Layout sidebar icons vertically on the left (or right, configurable) of the application (the icons are always visible - clicking the icon of the visible panel will close it)
 * Add a light theme (configurable, saved to Dropbox)
 * Location history with back/forward buttons (for example, follow a link to another part of the PDF, hit "back" to go back to where you were)
