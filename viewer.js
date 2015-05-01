@@ -476,6 +476,10 @@ var PDFViewerApplication = {
 //#endif
   },
 
+  getTitle: function pdfViewGetTitle() {
+    return document.title.replace(/ \| Chimp$/, '');
+  },
+
   close: function pdfViewClose() {
     var errorWrapper = document.getElementById('errorWrapper');
     errorWrapper.setAttribute('hidden', 'true');
@@ -1094,7 +1098,7 @@ var PDFViewerApplication = {
       }
 
       if (pdfTitle) {
-        self.setTitle(pdfTitle + ' - ' + document.title);
+        self.setTitle(pdfTitle + ' - ' + self.getTitle());
       }
 
       if (info.IsAcroFormPresent) {
