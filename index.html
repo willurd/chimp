@@ -26,6 +26,13 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 <!--#endif-->
     <title>Chimp</title>
 
+    <script>
+    // Force HTTPS.
+    if (!/^https/.test(window.location.protocol)) {
+      window.location.protocol = 'https';
+    }
+    </script>
+
     <!-- icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="images/ico/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="images/ico/apple-icon-60x60.png">
