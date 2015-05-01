@@ -18,7 +18,6 @@ My grand vision for Chimp is to make it a Dropbox-connected PDF Library.
 ## TODO
 
 * Fix ' | Chimp' duplication in the title (when more than one PDF is opened without refreshing the window).
-* Make zoom +/- buttons change zoom value in increments of 5% or 10%.
 * Add a manager for pdf metadata that is saved to dropbox.
   * Metadata should be stored in a map from `path -> Metadata` at `/Apps/Chimp/metadata.json`.
 * Add the ability to mark PDFs as "read" and "unread".
