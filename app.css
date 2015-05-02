@@ -1,5 +1,4 @@
 .marker-container {
-  background: #eee;
   position: absolute;
   top: 0;
   width: 50px;
@@ -15,7 +14,7 @@
 
 .marker {
   background-image: url(/images/bookdart.png);
-  cursor: 'move';
+  cursor: move;
   display: block;
   height: 49px;
   margin-top: -10px;
@@ -24,12 +23,13 @@
 }
 
 .marker-container.left .marker {
-  left: -2px;
+  left: -40px;
+  transform: scale(0.5, 0.5);
 }
 
 .marker-container.right .marker {
-  right: -2px;
-  transform: scaleX(-1);
+  right: -40px;
+  transform: scale(-0.5, -0.5);
 }
 
 /* http://tobiasahlin.com/spinkit/ */
