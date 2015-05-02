@@ -42,3 +42,4 @@ My grand vision for Chimp is to make it a Dropbox-connected PDF Library.
   * Save markers to Dropbox along with the the PDF's saved location/config.
 * Saved searches (usually, PDFs don't change so you should only have to perform a serach once - save searches and their results).
 * Note taking (not like sticky notes, just a list of notes in the sidebar that you can add to or edit).
+* Read selected text out loud with speech synthesis

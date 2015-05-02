@@ -489,7 +489,8 @@ var PDFPageView = (function PDFPageViewClosure() {
 
       document.onmousemove = function(event) {
         if (this.dragging) {
-          this.dragging.data.position = (event.y - canvas.getBoundingClientRect().top) / viewport.height * 100;
+          var y = Math.max(0, Math.min(viewport.height, (event.y - canvas.getBoundingClientRect().top)));
+          this.dragging.data.position = y / viewport.height * 100;
           this.dragging.el.style.top = this.dragging.data.position + '%';
         }
       }.bind(this);
