@@ -1531,7 +1531,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   cursor: -moz-grab !important;
   cursor: grab !important;
 }
-.grab-to-pan-grab *:not(input):not(textarea):not(button):not(select):not(:link) {
+.grab-to-pan-grab *:not(input):not(textarea):not(button):not(select):not(:link):not(.marker) {
   cursor: inherit !important;
 }
 .grab-to-pan-grab:active,

@@ -13,23 +13,26 @@
 }
 
 .marker {
-  background-image: url(/images/bookdart.png);
+  background-color: #E7716C;
+  box-shadow: 1px 1px rgba(0, 0, 0, 0.5);
   cursor: move;
   display: block;
-  height: 49px;
+  height: 20px;
   margin-top: -10px;
   position: absolute;
-  width: 157px;
+  width: 40px;
 }
 
 .marker-container.left .marker {
-  left: -40px;
-  transform: scale(0.5, 0.5);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  left: -1px;
 }
 
 .marker-container.right .marker {
-  right: -40px;
-  transform: scale(-0.5, -0.5);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  right: -1px;
 }
 
 /* http://tobiasahlin.com/spinkit/ */
