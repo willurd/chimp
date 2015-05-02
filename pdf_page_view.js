@@ -487,20 +487,21 @@ var PDFPageView = (function PDFPageViewClosure() {
       this.dragging;
       this.markers = this.markers || {};
 
-      var markerContainer = document.createElement('div');
-      markerContainer.className = 'marker-container left';
-      markerContainer.style.height = canvas.height + 'px';
-      markerContainer.ondrop = function(event) {
-        console.debug('ondrop', event);
-        console.debug('data', this.dragging.data);
-      }.bind(this);
-      markerContainer.ondragover = function(event) {
-        if (this.dragging && event.toElement === markerContainer) {
-          event.preventDefault();
-          this.dragging.data.position = event.offsetY / viewport.height * 100;
+      document.onmousemove = function(event) {
+        if (this.dragging) {
+          this.dragging.data.position = (event.y - canvas.getBoundingClientRect().top) / viewport.height * 100;
           this.dragging.el.style.top = this.dragging.data.position + '%';
         }
       }.bind(this);
+
+      document.onmouseup = function(event) {
+        console.log('mouse up');
+        this.dragging = null;
+      }.bind(this);
+
+      var markerContainer = document.createElement('div');
+      markerContainer.className = 'marker-container left';
+      markerContainer.style.height = canvas.height + 'px';
 
       var marker1Data = {
         isMarker: true,
@@ -511,8 +512,8 @@ var PDFPageView = (function PDFPageViewClosure() {
       marker1.className = 'marker';
       marker1.style.top = marker1Data.position + '%';
       marker1.draggable = true;
-      marker1.id = 'marker-' + marker1Data.id;
-      marker1.ondragstart = function(event) {
+      marker1.onmousedown = function(event) {
+        event.preventDefault();
         this.dragging = {
           data: marker1Data,
           el: marker1
