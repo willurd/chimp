@@ -9,6 +9,10 @@
   left: 0;
 }
 
+.marker-container.right {
+  right: 0;
+}
+
 .marker {
   background-color: #bbb;
   cursor: 'move';
@@ -18,10 +22,6 @@
   position: absolute;
   width: 50px;
 }
-
-/*.marker-container.left .marker {*/
-/*  left: -50%;*/
-/*}*/
 
 /* http://tobiasahlin.com/spinkit/ */
 

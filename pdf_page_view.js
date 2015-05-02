@@ -500,14 +500,35 @@ var PDFPageView = (function PDFPageViewClosure() {
         this.dragging = null;
       }.bind(this);
 
-      var markerContainer = document.createElement('div');
-      markerContainer.className = 'marker-container left';
-      markerContainer.style.height = canvas.height + 'px';
+      var leftMarkerContainer = document.createElement('div');
+      leftMarkerContainer.className = 'marker-container left';
+      leftMarkerContainer.style.height = canvas.height + 'px';
+
+      leftMarkerContainer.onmouseover = function(event) {
+        if (this.dragging && !leftMarkerContainer.contains(this.dragging.el)) {
+          this.dragging.data.side = 'left';
+          rightMarkerContainer.removeChild(this.dragging.el);
+          leftMarkerContainer.appendChild(this.dragging.el);
+        }
+      }.bind(this);
+
+      var rightMarkerContainer = document.createElement('div');
+      rightMarkerContainer.className = 'marker-container right';
+      rightMarkerContainer.style.height = canvas.height + 'px';
+
+      rightMarkerContainer.onmouseover = function(event) {
+        if (this.dragging && !rightMarkerContainer.contains(this.dragging.el)) {
+          this.dragging.data.side = 'left';
+          leftMarkerContainer.removeChild(this.dragging.el);
+          rightMarkerContainer.appendChild(this.dragging.el);
+        }
+      }.bind(this);
 
       var marker1Data = {
         isMarker: true,
         id: '1234',
-        position: 35.10
+        position: 35.10,
+        side: 'left'
       };
       var marker1 = document.createElement('div');
       marker1.className = 'marker';
@@ -520,9 +541,10 @@ var PDFPageView = (function PDFPageViewClosure() {
           el: marker1
         };
       }.bind(this);
-      markerContainer.appendChild(marker1);
+      leftMarkerContainer.appendChild(marker1);
 
-      this.div.appendChild(markerContainer);
+      this.div.appendChild(leftMarkerContainer);
+      this.div.appendChild(rightMarkerContainer);
 
       return promise;
     },
