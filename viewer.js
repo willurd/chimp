@@ -27,8 +27,8 @@
 
 'use strict';
 
-// var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
 var DEFAULT_URL = '';
+var DEFAULT_DROPBOX_PATH = 'test3.pdf';
 var DEFAULT_SCALE_DELTA = 1.01;
 var MIN_SCALE = 0.25;
 var MAX_SCALE = 10.0;
@@ -900,19 +900,26 @@ var PDFViewerApplication = {
     };
   },
 
-  openDropboxFile: function(file) {
-    DropboxHistory.add(file);
-    MessageOverlay.open('Loading ' + file.name, true);
+  openDropboxPath: function(path, name) {
+    name = name || path;
 
-    dropbox.readFile(file.path, { arrayBuffer: true }, function(err, data) {
+    MessageOverlay.open('Loading ' + name, true);
+
+    dropbox.readFile(path, { arrayBuffer: true }, function(err, data) {
       if (err) {
-        MessageOverlay.open('Unable to read file "' + file.path + '": ' + err);
+        MessageOverlay.open('Unable to read file "' + path + '": ' + err);
       } else {
         MessageOverlay.close();
+
         PDFViewerApplication.open(new Uint8Array(data), 0);
-        PDFViewerApplication.setTitle(file.name);
+        PDFViewerApplication.setTitle(name);
       }
     });
+  },
+
+  openDropboxFile: function(file) {
+    DropboxHistory.add(file);
+    this.openDropboxPath(file.path, file.name);
   },
 
   load: function pdfViewLoad(pdfDocument, scale) {

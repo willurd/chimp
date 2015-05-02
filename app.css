@@ -1,3 +1,27 @@
+.marker-container {
+  background: #eee;
+  position: absolute;
+  top: 0;
+  width: 50px;
+}
+
+.marker-container.left {
+  left: 0;
+}
+
+.marker {
+  background-color: #bbb;
+  cursor: 'move';
+  display: block;
+  height: 25px;
+  position: absolute;
+  width: 50px;
+}
+
+/*.marker-container.left .marker {*/
+/*  left: -50%;*/
+/*}*/
+
 /* http://tobiasahlin.com/spinkit/ */
 
 .spinner {

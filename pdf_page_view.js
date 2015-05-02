@@ -483,6 +483,45 @@ var PDFPageView = (function PDFPageViewClosure() {
       if (self.onBeforeDraw) {
         self.onBeforeDraw();
       }
+
+      this.dragging;
+      this.markers = this.markers || {};
+
+      var markerContainer = document.createElement('div');
+      markerContainer.className = 'marker-container left';
+      markerContainer.style.height = canvas.height + 'px';
+      markerContainer.ondrop = function(event) {
+        console.debug('ondrop', event);
+        console.debug('data', this.dragging.data);
+      }.bind(this);
+      markerContainer.ondragover = function(event) {
+        if (this.dragging && event.toElement === markerContainer) {
+          event.preventDefault();
+          this.dragging.data.position = event.offsetY / viewport.height * 100;
+          this.dragging.el.style.top = this.dragging.data.position + '%';
+        }
+      }.bind(this);
+
+      var marker1Data = {
+        isMarker: true,
+        id: '1234',
+        position: 35.10
+      };
+      var marker1 = document.createElement('div');
+      marker1.className = 'marker';
+      marker1.style.top = marker1Data.position + '%';
+      marker1.draggable = true;
+      marker1.id = 'marker-' + marker1Data.id;
+      marker1.ondragstart = function(event) {
+        this.dragging = {
+          data: marker1Data,
+          el: marker1
+        };
+      }.bind(this);
+      markerContainer.appendChild(marker1);
+
+      this.div.appendChild(markerContainer);
+
       return promise;
     },
 
