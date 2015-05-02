@@ -14,13 +14,22 @@
 }
 
 .marker {
-  background-color: #bbb;
+  background-image: url(/images/bookdart.png);
   cursor: 'move';
   display: block;
-  height: 20px;
+  height: 49px;
   margin-top: -10px;
   position: absolute;
-  width: 50px;
+  width: 157px;
+}
+
+.marker-container.left .marker {
+  left: -2px;
+}
+
+.marker-container.right .marker {
+  right: -2px;
+  transform: scaleX(-1);
 }
 
 /* http://tobiasahlin.com/spinkit/ */
