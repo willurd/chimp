@@ -489,7 +489,8 @@ var PDFPageView = (function PDFPageViewClosure() {
 
       document.onmousemove = function(event) {
         if (this.dragging) {
-          var y = Math.max(0, Math.min(viewport.height, (event.y - canvas.getBoundingClientRect().top)));
+          var padding = 12;
+          var y = Math.max(padding, Math.min(viewport.height - padding, (event.y - canvas.getBoundingClientRect().top)));
           this.dragging.data.position = y / viewport.height * 100;
           this.dragging.el.style.top = this.dragging.data.position + '%';
         }
@@ -497,6 +498,7 @@ var PDFPageView = (function PDFPageViewClosure() {
 
       document.onmouseup = function(event) {
         console.log('mouse up');
+        this.dragging && this.dragging.el.classList.remove('dragging');
         this.dragging = null;
       }.bind(this);
 
@@ -540,6 +542,7 @@ var PDFPageView = (function PDFPageViewClosure() {
           data: marker1Data,
           el: marker1
         };
+        marker1.classList.add('dragging');
       }.bind(this);
       leftMarkerContainer.appendChild(marker1);
 

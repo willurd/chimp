@@ -13,15 +13,28 @@
 }
 
 .marker {
-  background-color: #E7716C;
+  background: linear-gradient(to bottom, rgba(214,214,214,1) 0%,rgba(234,234,234,1) 100%);
   box-shadow: 1px 1px rgba(0, 0, 0, 0.5);
   cursor: move;
   display: block;
   height: 20px;
   margin-top: -10px;
+  opacity: 0.5;
   position: absolute;
   width: 40px;
 }
+
+.marker:hover, .marker.dragging {
+  opacity: 1;
+}
+
+/*.marker::before, .marker:hover::before, .marker.dragging::before {*/
+/*  background-color: #ccc;*/
+/*  content: " ";*/
+/*  display: block;*/
+/*  height: 3px;*/
+/*  width: 100%;*/
+/*}*/
 
 .marker-container.left .marker {
   border-top-right-radius: 10px;
