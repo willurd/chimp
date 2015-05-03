@@ -122,6 +122,7 @@ var PDFViewerApplication = {
   preferenceDefaultZoomValue: '',
   isViewerEmbedded: (window.parent !== window),
   url: '',
+  automaticSyncTimeThreshold: 60 * 60 * 1000, // 1 hour, in milliseconds
 
   // called once when the document is loaded
   initialize: function pdfViewInitialize() {
@@ -873,12 +874,16 @@ var PDFViewerApplication = {
   },
 
   sync: function pdfViewSync() {
-    MessageOverlay.open('Syncing progress', true);
+    var time = Date.now();
 
-    if (!this.store) {
-      // There is no pdf loaded.
+    if (!this.store ||
+      !this.preferenceShowPreviousViewOnLoad ||
+      time - PDFViewerApplication.lastSyncTime < PDFViewerApplication.automaticSyncTimeThreshold) {
       return;
     }
+
+    PDFViewerApplication.lastSyncTime = time;
+    MessageOverlay.open('Syncing progress', true);
 
     return this.store.get(this.defaultConfig()).then(function(c) {
       MessageOverlay.close();
@@ -987,6 +992,7 @@ var PDFViewerApplication = {
       }
 
       if (self.preferenceShowPreviousViewOnLoad) {
+        PDFViewerApplication.lastSyncTime = Date.now();
         self.setDefaultHash(scale);
 
         return store.get(self.defaultConfig()).then(function(c) {
@@ -1978,6 +1984,10 @@ window.addEventListener('change', function webViewerChange(evt) {
   document.getElementById('secondaryDownload').setAttribute('hidden', 'true');
 }, true);
 //#endif
+
+window.addEventListener('focus', function webViewerFocus(event) {
+  PDFViewerApplication.sync();
+});
 
 function selectScaleOption(value) {
   var options = document.getElementById('scaleSelect').options;
