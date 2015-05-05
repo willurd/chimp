@@ -874,15 +874,7 @@ var PDFViewerApplication = {
   },
 
   sync: function pdfViewSync() {
-    var time = Date.now();
-
-    if (!this.store ||
-      !this.preferenceShowPreviousViewOnLoad ||
-      time - PDFViewerApplication.lastSyncTime < PDFViewerApplication.automaticSyncTimeThreshold) {
-      return;
-    }
-
-    PDFViewerApplication.lastSyncTime = time;
+    PDFViewerApplication.lastSyncTime = Date.now();
     MessageOverlay.open('Syncing progress', true);
 
     return this.store.get(this.defaultConfig()).then(function(c) {
@@ -1986,6 +1978,12 @@ window.addEventListener('change', function webViewerChange(evt) {
 //#endif
 
 window.addEventListener('focus', function webViewerFocus(event) {
+  if (!PDFViewerApplication.store ||
+    !PDFViewerApplication.preferenceShowPreviousViewOnLoad ||
+    Date.now() - PDFViewerApplication.lastSyncTime < PDFViewerApplication.automaticSyncTimeThreshold) {
+    return;
+  }
+
   PDFViewerApplication.sync();
 });
 
