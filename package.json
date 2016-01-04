@@ -1,0 +1,7 @@
+{
+  "name": "Chimp",
+  "version": "0.0.1",
+  "scripts": {
+    "serve": "python -m SimpleHTTPServer 8080"
+  }
+}

@@ -1,5 +1,9 @@
 /* http://tobiasahlin.com/spinkit/ */
 
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
 .spinner {
   margin: 30px auto 0;
   width: 70px;

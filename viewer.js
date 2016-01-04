@@ -18,8 +18,8 @@
            DownloadManager, getFileName, scrollIntoView, getPDFFileNameFromURL,
            PDFHistory, Preferences, SidebarView, ViewHistory, Stats,
            PDFThumbnailViewer, URL, noContextMenuHandler, SecondaryToolbar,
-           PasswordPrompt, MessageOverlay, Dropbox, PresentationMode, HandTool, Promise,
-           DocumentProperties, PDFOutlineView, PDFAttachmentView,
+           PasswordPrompt, MessageOverlay, Dropbox, PresentationMode, HandTool, HorizontalScrollingTool,
+           Promise, DocumentProperties, PDFOutlineView, PDFAttachmentView,
            OverlayManager, PDFFindController, PDFFindBar, getVisibleElements,
            watchScroll, PDFViewer, PDFRenderingQueue, PresentationModeState, dropbox,
            RenderingStates, DEFAULT_SCALE, UNKNOWN_SCALE, DropboxHistory, DropboxHistoryView,
@@ -138,7 +138,8 @@ var PDFViewerApplication = {
       container: container,
       viewer: viewer,
       renderingQueue: pdfRenderingQueue,
-      linkService: this
+      linkService: this,
+      removePageBorders: true
     });
     pdfRenderingQueue.setViewer(this.pdfViewer);
 
@@ -180,6 +181,11 @@ var PDFViewerApplication = {
     HandTool.initialize({
       container: container,
       toggleHandTool: document.getElementById('toggleHandTool')
+    });
+
+    HorizontalScrollingTool.initialize({
+      container: container,
+      toggleElement: document.getElementById('toggleHorizontalScrollingTool')
     });
 
     SecondaryToolbar.initialize({
@@ -1893,13 +1899,15 @@ window.addEventListener('updateviewarea', function () {
   }
 
   var location = PDFViewerApplication.pdfViewer.location;
+  var lockHorizontalScrolling = PDFViewerApplication.pdfViewer.lockHorizontalScrolling;
 
   PDFViewerApplication.store.setMultiple({
     'exists': true,
     'page': location.pageNumber,
     'zoom': location.scale,
     'scrollLeft': location.left,
-    'scrollTop': location.top
+    'scrollTop': location.top,
+    'lockHorizontalScrolling': lockHorizontalScrolling
   }).catch(function() {
     // unable to write to storage
     console.error('Unable to write to storage');

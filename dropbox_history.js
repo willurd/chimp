@@ -33,7 +33,7 @@ var DropboxHistory = {
     }
   },
 
-  unlisten: function dropboxHistoryListen(callback) {
+  unlisten: function dropboxHistoryUnlisten(callback) {
     var index = DropboxHistory._listeners.indexOf(callback);
 
     if (index >= 0) {
