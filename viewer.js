@@ -185,6 +185,7 @@ var PDFViewerApplication = {
 
     HorizontalScrollingTool.initialize({
       container: container,
+      viewerElement: viewer,
       toggleElement: document.getElementById('toggleHorizontalScrollingTool')
     });
 
@@ -890,6 +891,7 @@ var PDFViewerApplication = {
         var zoom = c.zoom || this.preferenceDefaultZoomValue;
         var hash = 'page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop;
         this.setHash(hash);
+        this.setViewHistory(c);
       }
     }.bind(this));
   },
@@ -998,6 +1000,7 @@ var PDFViewerApplication = {
             var zoom = c.zoom || this.preferenceDefaultZoomValue;
             var hash = 'page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop;
             self.setHash(hash);
+            self.setViewHistory(c);
           } else {
             self.setDefaultHash(scale);
           }
@@ -1184,6 +1187,12 @@ var PDFViewerApplication = {
     this.pdfRenderingQueue.printing = this.printing;
     this.pdfRenderingQueue.isThumbnailViewEnabled = this.sidebarOpen;
     this.pdfRenderingQueue.renderHighestPriority();
+  },
+
+  setViewHistory: function pdfViewSetViewHistory(c) {
+    var isHorizontalScrollbarEnabled = 'isHorizontalScrollbarEnabled' in c ? c.isHorizontalScrollbarEnabled : true;
+
+    HorizontalScrollingTool.setHorizontalScrollingEnabled(isHorizontalScrollbarEnabled);
   },
 
   setHash: function pdfViewSetHash(hash) {
@@ -1907,7 +1916,7 @@ window.addEventListener('updateviewarea', function () {
     'zoom': location.scale,
     'scrollLeft': location.left,
     'scrollTop': location.top,
-    'lockHorizontalScrolling': lockHorizontalScrolling
+    'isHorizontalScrollbarEnabled': HorizontalScrollingTool.isHorizontalScrollingEnabled
   }).catch(function() {
     // unable to write to storage
     console.error('Unable to write to storage');

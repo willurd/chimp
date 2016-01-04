@@ -1022,6 +1022,10 @@ html[dir="rtl"] .secondaryToolbarButton > span {
   content: url(images/secondaryToolbarButton-handTool.png);
 }
 
+.secondaryToolbarButton.horizontalScrollingTool::before {
+  content: url(images/toolbarButton-zoomIn.png);
+}
+
 .secondaryToolbarButton.documentProperties::before {
   content: url(images/secondaryToolbarButton-documentProperties.png);
 }
