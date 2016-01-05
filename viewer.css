@@ -860,6 +860,14 @@ html[dir='rtl'] .toolbarButton.findNext::before {
   content: url(images/findbarButton-next-rtl.png);
 }
 
+#historyPreviousButton::before {
+  content: url(images/left.png);
+}
+
+#historyNextButton::before {
+  content: url(images/right.png);
+}
+
 html[dir='ltr'] .toolbarButton.pageUp::before {
   content: url(images/toolbarButton-pageUp.png);
 }
