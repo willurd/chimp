@@ -1,6 +1,6 @@
 /* http://tobiasahlin.com/spinkit/ */
 
-body {
+#outerContainer {
   -webkit-overflow-scrolling: touch;
 }
 
