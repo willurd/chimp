@@ -5,7 +5,7 @@
 }
 
 #viewer.horizontal-scrolling-disabled {
-  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .spinner {
