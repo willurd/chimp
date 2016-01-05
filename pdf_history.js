@@ -26,7 +26,7 @@ var PDFHistory = {
    * @param {string} fingerprint
    * @param {IPDFLinkService} linkService
    */
-  initialize: function pdfHistoryInitialize(fingerprint, linkService) {
+  initialize: function pdfHistoryInitialize(fingerprint, linkService, options) {
     this.initialized = true;
     this.reInitialized = false;
     this.allowHashChange = true;
@@ -44,6 +44,9 @@ var PDFHistory = {
     this.linkService = linkService;
     this.currentUid = this.uid = 0;
     this.current = {};
+
+    this.previousButton = options.previousButton;
+    this.nextButton = options.nextButton;
 
     var state = window.history.state;
     if (this._isStateObjectDefined(state)) {
@@ -100,6 +103,8 @@ var PDFHistory = {
         self._pushToHistory({ hash: self.previousHash }, false, true);
         self._updatePreviousBookmark();
       }
+
+      self.updateHistoryButtons();
     }, false);
 
     function pdfHistoryBeforeUnload() {
@@ -110,6 +115,9 @@ var PDFHistory = {
         self._pushToHistory(previousParams, false, replacePrevious);
         self._updatePreviousBookmark();
       }
+
+      this.updateHistoryButtons();
+
       // Remove the event listener when navigating away from the document,
       // since 'beforeunload' prevents Firefox from caching the document.
       window.removeEventListener('beforeunload', pdfHistoryBeforeUnload, false);
@@ -122,6 +130,24 @@ var PDFHistory = {
       // the 'DOMContentLoaded' event is not fired on 'pageshow'.
       window.addEventListener('beforeunload', pdfHistoryBeforeUnload, false);
     }, false);
+
+
+    this.previousButton.addEventListener('click', this.back.bind(this));
+    this.nextButton.addEventListener('click', this.forward.bind(this));
+  },
+
+  updateHistoryButtons: function pdfHistoryUpdateHistoryButtons() {
+    if (PDFHistory.hasPrevious()) {
+      this.previousButton.removeAttribute('disabled');
+    } else {
+      this.previousButton.setAttribute('disabled', true);
+    }
+
+    if (PDFHistory.hasNext()) {
+      this.nextButton.removeAttribute('disabled');
+    } else {
+      this.nextButton.setAttribute('disabled', true);
+    }
   },
 
   _isStateObjectDefined: function pdfHistory_isStateObjectDefined(state) {
@@ -251,6 +277,8 @@ var PDFHistory = {
                this.current.page !== params.page) {
       this._pushToHistory(params, true);
     }
+
+    this.updateHistoryButtons();
   },
 
   _getPreviousParams: function pdfHistory_getPreviousParams(onlyCheckPage,
@@ -365,14 +393,25 @@ var PDFHistory = {
     this.go(1);
   },
 
+  hasPrevious: function pdfHistoryHasPrevious() {
+    var state = window.history.state;
+    return state && state.uid > 0;
+  },
+
+  hasNext: function pdfHistoryHasPrevious() {
+    var state = window.history.state;
+    return state && state.uid < (this.uid - 1);
+  },
+
   go: function pdfHistoryGo(direction) {
     if (this.initialized && this.historyUnlocked) {
-      var state = window.history.state;
-      if (direction === -1 && state && state.uid > 0) {
+      if (direction === -1 && this.hasPrevious()) {
         window.history.back();
-      } else if (direction === 1 && state && state.uid < (this.uid - 1)) {
+      } else if (direction === 1 && this.hasNext()) {
         window.history.forward();
       }
+
+      this.updateHistoryButtons();
     }
   }
 };

@@ -979,7 +979,19 @@ var PDFViewerApplication = {
         if (!self.preferenceShowPreviousViewOnLoad && window.history.state) {
           window.history.replaceState(null, '');
         }
-        PDFHistory.initialize(self.documentFingerprint, self);
+        PDFHistory.initialize(self.documentFingerprint, self, {
+          previousButton: document.getElementById('historyPreviousButton'),
+          nextButton: document.getElementById('historyNextButton')
+        });
+      }
+
+      if (PDFJS.disableHistory) {
+        var group = document.getElementById('historyButtonsGroup');
+        var parent = group.parentNode;
+
+        if (parent) {
+          parent.removeChild(group);
+        }
       }
 
       // Make all navigation keys work on document load,
@@ -999,7 +1011,7 @@ var PDFViewerApplication = {
           if (c.exists) {
             var zoom = c.zoom || this.preferenceDefaultZoomValue;
             var hash = 'page=' + c.page + '&zoom=' + zoom + ',' + c.scrollLeft + ',' + c.scrollTop;
-            self.setHash(hash);
+            setTimeout(self.setHash.bind(self, hash), 1);
             self.setViewHistory(c);
           } else {
             self.setDefaultHash(scale);

@@ -269,19 +269,21 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 
                 <div class="toolbarButtonSpacer"></div>
 
-                <div class="splitToolbarButton">
-                  <button id="historyPreviousButton" class="toolbarButton" title="Previous">
-                    <span>Previous</span>
-                  </button>
+                <div id="historyButtonsGroup">
+                  <div class="splitToolbarButton">
+                    <button id="historyPreviousButton" class="toolbarButton" title="Previous" disabled>
+                      <span>Previous</span>
+                    </button>
 
-                  <div class="splitToolbarButtonSeparator"></div>
+                    <div class="splitToolbarButtonSeparator"></div>
 
-                  <button id="historyNextButton" class="toolbarButton" title="Next">
-                    <span>Next</span>
-                  </button>
+                    <button id="historyNextButton" class="toolbarButton" title="Next" disabled>
+                      <span>Next</span>
+                    </button>
+                  </div>
+
+                  <div class="toolbarButtonSpacer"></div>
                 </div>
-
-                <div class="toolbarButtonSpacer"></div>
 
                 <button id="viewFind" class="toolbarButton group hiddenSmallView" title="Find in Document" tabindex="12" data-l10n-id="findbar">
                    <span data-l10n-id="findbar_label">Find</span>
